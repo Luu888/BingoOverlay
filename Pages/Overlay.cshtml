@@ -10,9 +10,54 @@
 
     @foreach (var tile in Model.Tiles)
     {
-        <div class="tile @(tile.Completed ? "done" : "")">
+        <div class="tile @(tile.Completed ? "done" : "")"
+             data-id="@tile.Id">
+
             @tile.Text
+
         </div>
     }
 
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+
+
+<script>
+
+    const connection =
+    new signalR.HubConnectionBuilder()
+    .withUrl("/bingoHub")
+    .build();
+
+
+    connection.on(
+    "TileUpdated",
+    function(id, completed)
+    {
+    const tile =
+    document.querySelector(
+    `[data-id='${id}']`
+    );
+
+
+    if(tile)
+    {
+    tile.classList.toggle(
+    "done",
+    completed
+    );
+    }
+    });
+
+
+    connection.start()
+    .then(() => {
+    console.log("SignalR connected");
+    })
+    .catch(err => {
+    console.error(err);
+    });
+
+</script>
