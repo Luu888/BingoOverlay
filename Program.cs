@@ -2,10 +2,13 @@ using BingoOverlay.Data;
 using BingoOverlay.Hubs;
 using BingoOverlay.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://localhost:8888");
 
 builder.Services.AddRazorPages();
 
@@ -35,6 +38,8 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider
                   .GetRequiredService<BingoDbContext>();
 
+    db.Database.EnsureCreated();
+
     if (!db.Tiles.Any())
     {
         for (int i = 0; i < 25; i++)
@@ -50,5 +55,14 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 }
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    Process.Start(new ProcessStartInfo
+    {
+        FileName = "http://localhost:8888",
+        UseShellExecute = true
+    });
+});
 
 app.Run();
