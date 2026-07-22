@@ -8,18 +8,11 @@ body {
     background: transparent;
 }
 
-
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Segoe UI', Arial, sans-serif;
-}
-
-.bingo {
-    display: grid;
-    grid-template-columns: repeat(5, 120px);
-    gap: 12px;
 }
 
 .tile {
@@ -62,11 +55,18 @@ body {
     }
 
 
-        .tile.done::after {
-            content: "✓";
-            position: absolute;
-            top: 5px;
-            right: 8px;
-            font-size: 30px;
-            color: white;
-        }
+    .tile.done::after {
+        content: "✓";
+        position: absolute;
+        top: 5px;
+        right: 8px;
+        font-size: 30px;
+        color: white;
+    }
+
+
+.bingo {
+    display: grid;
+    grid-template-columns: repeat(5, 120px);
+    gap: 10px;
+}

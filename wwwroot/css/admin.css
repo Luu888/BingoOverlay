@@ -2,6 +2,7 @@
     background: #18121f;
     color: white;
     font-family: 'Segoe UI',sans-serif;
+    overflow: auto;
 }
 
 
@@ -19,9 +20,8 @@ h1 {
 
 .bingo {
     display: grid;
-    grid-template-columns: repeat(5, 120px);
-    gap: 15px;
-    margin-bottom: 50px;
+    grid-template-columns: repeat(5,120px);
+    gap: 12px;
     justify-content: center;
 }
 
@@ -66,8 +66,4 @@ form {
 
 .save-text {
     cursor: pointer;
-}
-
-.admin-container {
-    padding-bottom: 80px;
 }
