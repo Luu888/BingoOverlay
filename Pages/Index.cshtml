@@ -1,0 +1,13 @@
+﻿@page
+@model IndexModel
+
+<div class="bingo">
+
+    @foreach (var tile in Model.Tiles)
+    {
+        <div class="tile @(tile.Completed ? "done" : "")">
+            @tile.Text
+        </div>
+    }
+
+</div>
