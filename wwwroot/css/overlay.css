@@ -16,21 +16,11 @@ body {
     font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-
-/* =====================
-   BINGO GRID
-   ===================== */
-
 .bingo {
     display: grid;
     grid-template-columns: repeat(5, 120px);
     gap: 12px;
 }
-
-
-/* =====================
-   TILE
-   ===================== */
 
 .tile {
     width: 120px;
@@ -54,8 +44,6 @@ body {
 }
 
 
-    /* połysk */
-
     .tile::before {
         content: "";
         position: absolute;
@@ -67,8 +55,6 @@ body {
         top: -40px;
     }
 
-
-    /* completed */
 
     .tile.done {
         background: linear-gradient( 135deg, #7dffb2, #32d583 );

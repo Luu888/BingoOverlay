@@ -61,12 +61,6 @@
     'input[name="__RequestVerificationToken"]'
     ).value;
 
-
-
-    // ===============================
-    // Toggle kafelka
-    // ===============================
-
     document.querySelectorAll(".tile")
     .forEach(button => {
 
@@ -99,12 +93,6 @@
 
     });
 
-
-
-
-    // ===============================
-    // Zapis tekstu
-    // ===============================
 
     document.querySelectorAll(".save-text")
     .forEach(button => {
@@ -160,20 +148,10 @@
     });
 
 
-
-
-    // ===============================
-    // SignalR
-    // ===============================
-
     const connection =
     new signalR.HubConnectionBuilder()
     .withUrl("/bingoHub")
     .build();
-
-
-
-    // zmiana statusu
 
     connection.on(
     "TileUpdated",
@@ -195,11 +173,6 @@
     }
 
     });
-
-
-
-
-    // zmiana tekstu
 
     connection.on(
     "TileTextUpdated",
