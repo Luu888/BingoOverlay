@@ -19,8 +19,9 @@ h1 {
 
 .bingo {
     display: grid;
-    grid-template-columns: repeat(5,120px);
-    gap: 12px;
+    grid-template-columns: repeat(5, 120px);
+    gap: 15px;
+    margin-bottom: 50px;
     justify-content: center;
 }
 
@@ -65,4 +66,8 @@ form {
 
 .save-text {
     cursor: pointer;
+}
+
+.admin-container {
+    padding-bottom: 80px;
 }
