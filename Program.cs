@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://localhost:8888");
 
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<BingoDbContext>(
@@ -37,6 +38,8 @@ var app = builder.Build();
 app.UseStaticFiles();
 
 app.MapRazorPages();
+
+app.MapControllers();
 
 app.MapHub<BingoHub>("/bingoHub");
 

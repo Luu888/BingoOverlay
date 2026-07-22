@@ -1,10 +1,12 @@
-﻿using BingoOverlay.Models;
+﻿using BingoOverlay.Data;
+using BingoOverlay.Models;
 using BingoOverlay.Models.Enums;
 using BingoOverlay.Services;
 using Microsoft.Extensions.Options;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace BingoOverlay.Services;
 
@@ -26,45 +28,17 @@ public class TwitchEventSubService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var socket = new ClientWebSocket();
-
-        await socket.ConnectAsync(new Uri("wss://eventsub.wss.twitch.tv/ws"), stoppingToken);
-
-        Console.WriteLine("Połączono z Twitch EventSub");
-
-        var buffer = new byte[8192];
-
         while (!stoppingToken.IsCancellationRequested)
         {
-            var result = await socket.ReceiveAsync(buffer, stoppingToken);
-            var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
-            Console.WriteLine(json);
-
-            using var document = JsonDocument.Parse(json);
-
-            var messageType = document.RootElement
-                .GetProperty("metadata")
-                .GetProperty("message_type")
-                .GetString();
-
-            if (messageType == "session_welcome")
+            if (!await IsTwitchAuthorizedAsync())
             {
-                var sessionId = document.RootElement
-                    .GetProperty("payload")
-                    .GetProperty("session")
-                    .GetProperty("id")
-                    .GetString();
+                Console.WriteLine("Twitch nie jest jeszcze podłączony");
+                await Task.Delay(TimeSpan.FromSeconds(5),stoppingToken);
 
-                Console.WriteLine($"Session ID: {sessionId}");
-
-                await CreateChatSubscriptionAsync(sessionId!, stoppingToken);
+                continue;
             }
 
-            if (messageType == "notification")
-            {
-                await HandleNotificationAsync(document, stoppingToken);
-            }
+            await RunEventSubAsync(stoppingToken);
         }
     }
 
@@ -130,34 +104,56 @@ public class TwitchEventSubService : BackgroundService
         }
     }
 
-    private async Task CreateChatSubscriptionAsync(string sessionId, CancellationToken cancellationToken)
+    private async Task CreateChatSubscriptionAsync(
+    string sessionId,
+    CancellationToken cancellationToken)
     {
+        using var scope = _scopeFactory.CreateScope();
+
+        var db = scope.ServiceProvider.GetRequiredService<BingoDbContext>();
+
+        var auth = await db.TwitchAuth.FirstOrDefaultAsync(cancellationToken);
+
+        if (auth == null)
+        {
+            Console.WriteLine("Brak autoryzacji Twitch");
+
+            return;
+        }
+
         var client = _httpClientFactory.CreateClient();
 
-        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_options.AccessToken}");
+        client.DefaultRequestHeaders.Add("Authorization",$"Bearer {auth.AccessToken}");
 
         client.DefaultRequestHeaders.Add("Client-Id", _options.ClientId);
 
         var body = new
         {
             type = "channel.chat.message",
+
             version = "1",
+
             condition = new
             {
-                broadcaster_user_id = _options.BroadcasterId,
-                user_id = _options.BroadcasterId
+                broadcaster_user_id = auth.BroadcasterId,
+
+                user_id = auth.BroadcasterId
             },
+
             transport = new
             {
                 method = "websocket",
+
                 session_id = sessionId
             }
         };
 
         var response = await client.PostAsJsonAsync("https://api.twitch.tv/helix/eventsub/subscriptions", body, cancellationToken);
-        var content = await response.Content.ReadAsStringAsync( cancellationToken);
+
+        var content =await response.Content.ReadAsStringAsync(cancellationToken);
 
         Console.WriteLine("Subskrypcja Twitch:");
+
         Console.WriteLine(content);
 
         response.EnsureSuccessStatusCode();
@@ -228,5 +224,65 @@ public class TwitchEventSubService : BackgroundService
         }
 
         return TwitchUserPermission.None;
+    }
+
+    private async Task<bool> IsTwitchAuthorizedAsync()
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var db = scope.ServiceProvider
+            .GetRequiredService<BingoDbContext>();
+
+        return await db.TwitchAuth.AnyAsync();
+    }
+
+    private async Task RunEventSubAsync(
+    CancellationToken stoppingToken)
+    {
+        using var socket = new ClientWebSocket();
+
+        await socket.ConnectAsync(new Uri("wss://eventsub.wss.twitch.tv/ws"), stoppingToken);
+
+        Console.WriteLine("Połączono z Twitch EventSub");
+
+        var buffer = new byte[8192];
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var result = await socket.ReceiveAsync(buffer,stoppingToken);
+            var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
+            Console.WriteLine(json);
+
+            using var document = JsonDocument.Parse(json);
+
+            var messageType =
+                document.RootElement
+                .GetProperty("metadata")
+                .GetProperty("message_type")
+                .GetString();
+
+            if (messageType == "session_welcome")
+            {
+                var sessionId =
+                    document.RootElement
+                    .GetProperty("payload")
+                    .GetProperty("session")
+                    .GetProperty("id")
+                    .GetString();
+
+
+                Console.WriteLine(
+                    $"Session ID: {sessionId}");
+
+
+                await CreateChatSubscriptionAsync(sessionId!, stoppingToken);
+            }
+
+            if (messageType == "notification")
+            {
+                await HandleNotificationAsync(document, stoppingToken);
+            }
+        }
     }
 }

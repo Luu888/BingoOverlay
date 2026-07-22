@@ -12,4 +12,5 @@ public class BingoDbContext : DbContext
     }
 
     public DbSet<BingoTile> Tiles => Set<BingoTile>();
+    public DbSet<TwitchAuth> TwitchAuth { get; set; }
 }
