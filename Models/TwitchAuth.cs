@@ -10,6 +10,8 @@
 
         public string BroadcasterId { get; set; } = "";
 
+        public string DisplayName { get; set; } = "";
+
         public DateTime ExpiresAt { get; set; }
     }
 }

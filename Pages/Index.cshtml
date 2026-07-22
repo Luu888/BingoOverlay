@@ -1,6 +1,13 @@
 ﻿@page
 @model IndexModel
 
+@if (Request.Query["twitch"] == "connected")
+{
+    <div class="alert alert-success">
+        Twitch połączony pomyślnie 🎉
+    </div>
+}
+
 <div class="bingo">
 
     @foreach (var tile in Model.Tiles)

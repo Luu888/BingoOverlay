@@ -45,8 +45,7 @@ public class TwitchController : Controller
     }
 
     [HttpGet("callback")]
-    public async Task<IActionResult> Callback(
-        string code)
+    public async Task<IActionResult> Callback(string code)
     {
         if (string.IsNullOrWhiteSpace(code))
             return BadRequest("Brak code");
@@ -82,7 +81,7 @@ public class TwitchController : Controller
             return BadRequest(tokenJson);
         }
 
-        var token =JsonSerializer.Deserialize<TwitchTokenResponse>(tokenJson);
+        var token = JsonSerializer.Deserialize<TwitchTokenResponse>(tokenJson);
 
         if (token == null)
             return BadRequest("Nie udało się pobrać tokena");
@@ -115,22 +114,15 @@ public class TwitchController : Controller
         _db.TwitchAuth.Add(
             new TwitchAuth
             {
-                AccessToken =
-                    token.AccessToken,
-
-                RefreshToken =
-                    token.RefreshToken,
-
-                BroadcasterId =
-                    twitchUser.Id,
-
-                ExpiresAt =
-                    DateTime.UtcNow.AddSeconds(
-                        token.ExpiresIn)
+                AccessToken = token.AccessToken,
+                RefreshToken = token.RefreshToken,
+                BroadcasterId = twitchUser.Id,
+                DisplayName = twitchUser.DisplayName,
+                ExpiresAt = DateTime.UtcNow.AddSeconds(token.ExpiresIn)
             });
 
         await _db.SaveChangesAsync();
 
-        return Content($"Twitch połączony jako {twitchUser.DisplayName}");
+        return Redirect("/?twitch=connected");
     }
 }
