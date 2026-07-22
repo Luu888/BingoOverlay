@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BingoOverlay")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a284f90585c72532d3188ae4958aa028e55d3c7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30bd53f24d8d1ef2a9a338d1016c84ee6f9d5f27")]
 [assembly: System.Reflection.AssemblyProductAttribute("BingoOverlay")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BingoOverlay")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
