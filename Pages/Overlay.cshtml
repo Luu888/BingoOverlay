@@ -1,0 +1,18 @@
+﻿@page
+@model OverlayModel
+
+@{
+    Layout = "_OverlayLayout";
+}
+
+
+<div class="bingo">
+
+    @foreach (var tile in Model.Tiles)
+    {
+        <div class="tile @(tile.Completed ? "done" : "")">
+            @tile.Text
+        </div>
+    }
+
+</div>
