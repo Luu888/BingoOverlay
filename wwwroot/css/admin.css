@@ -52,3 +52,17 @@ form {
     .tile.done {
         background: linear-gradient( 135deg, #7dffb2, #32d583 );
     }
+
+.tile-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tile-text {
+    width: 120px;
+}
+
+.save-text {
+    cursor: pointer;
+}

@@ -19,12 +19,31 @@
 
         @foreach (var tile in Model.Tiles)
         {
-            <button class="tile @(tile.Completed ? "done" : "")"
-                    data-id="@tile.Id">
+            <div class="tile-wrapper">
 
-                @tile.Text
+                <input class="tile-text"
+                       data-id="@tile.Id"
+                       value="@tile.Text" />
 
-            </button>
+
+                <button class="tile @(tile.Completed ? "done" : "")"
+                        data-id="@tile.Id">
+
+                    <span class="tile-label">
+                        @tile.Text
+                    </span>
+
+                </button>
+
+
+                <button class="save-text"
+                        data-id="@tile.Id">
+
+                    💾
+
+                </button>
+
+            </div>
         }
 
     </div>
@@ -32,44 +51,197 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+
+
 <script>
 
-        document.querySelectorAll(".tile")
+    const token =
+    document.querySelector(
+    'input[name="__RequestVerificationToken"]'
+    ).value;
+
+
+
+    // ===============================
+    // Toggle kafelka
+    // ===============================
+
+    document.querySelectorAll(".tile")
     .forEach(button => {
 
-        button.addEventListener("click", async () => {
+    button.addEventListener("click", async () => {
 
-            const id = button.dataset.id;
-
-            const token = document.querySelector(
-                'input[name="__RequestVerificationToken"]'
-            ).value;
+    const id = button.dataset.id;
 
 
-            const response = await fetch(
-                `/Admin?handler=Toggle&id=${id}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "RequestVerificationToken": token
-                    }
-                });
+    const response = await fetch(
+    `/Admin?handler=Toggle&id=${id}`,
+    {
+    method:"POST",
+
+    headers:
+    {
+    "RequestVerificationToken": token
+    }
+    });
 
 
-            if (response.ok)
-            {
-                button.classList.toggle("done");
-            }
-            else
-            {
-                console.error(
-                    "Błąd:",
-                    response.status
-                );
-            }
-
-        });
+    if(!response.ok)
+    {
+    console.error(
+    "Toggle error",
+    response.status
+    );
+    }
 
     });
+
+    });
+
+
+
+
+    // ===============================
+    // Zapis tekstu
+    // ===============================
+
+    document.querySelectorAll(".save-text")
+    .forEach(button => {
+
+
+    button.addEventListener("click", async () => {
+
+
+    const id = button.dataset.id;
+
+
+    const input =
+    document.querySelector(
+    `.tile-text[data-id='${id}']`
+    );
+
+
+    const text = input.value;
+
+
+
+    const response = await fetch(
+    `/Admin?handler=UpdateText`,
+    {
+    method:"POST",
+
+    headers:
+    {
+    "Content-Type":
+    "application/x-www-form-urlencoded",
+
+    "RequestVerificationToken":
+    token
+    },
+
+
+    body:
+    `id=${id}&text=${encodeURIComponent(text)}`
+    });
+
+
+    if(!response.ok)
+    {
+    console.error(
+    "Update text error",
+    response.status
+    );
+    }
+
+    });
+
+
+    });
+
+
+
+
+    // ===============================
+    // SignalR
+    // ===============================
+
+    const connection =
+    new signalR.HubConnectionBuilder()
+    .withUrl("/bingoHub")
+    .build();
+
+
+
+    // zmiana statusu
+
+    connection.on(
+    "TileUpdated",
+    function(id, completed)
+    {
+
+    const tile =
+    document.querySelector(
+    `.tile[data-id='${id}']`
+    );
+
+
+    if(tile)
+    {
+    tile.classList.toggle(
+    "done",
+    completed
+    );
+    }
+
+    });
+
+
+
+
+    // zmiana tekstu
+
+    connection.on(
+    "TileTextUpdated",
+    function(id, text)
+    {
+
+    const label =
+    document.querySelector(
+    `.tile[data-id='${id}'] .tile-label`
+    );
+
+
+    const input =
+    document.querySelector(
+    `.tile-text[data-id='${id}']`
+    );
+
+
+    if(label)
+    {
+    label.innerText = text;
+    }
+
+
+    if(input)
+    {
+    input.value = text;
+    }
+
+    });
+
+
+
+    connection.start()
+    .then(() =>
+    {
+    console.log("SignalR connected");
+    })
+    .catch(err =>
+    {
+    console.error(err);
+    });
+
 
 </script>

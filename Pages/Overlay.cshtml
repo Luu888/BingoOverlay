@@ -41,6 +41,24 @@
     `[data-id='${id}']`
     );
 
+    connection.on(
+    "TileTextUpdated",
+    function(id,text)
+    {
+
+    const tile =
+    document.querySelector(
+    `[data-id='${id}']`
+    );
+
+
+    if(tile)
+    {
+    tile.innerText = text;
+    }
+
+    });
+
 
     if(tile)
     {

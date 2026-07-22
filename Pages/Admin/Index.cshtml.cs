@@ -39,13 +39,11 @@ public class IndexModel : PageModel
         var tile = await _db.Tiles
             .FirstOrDefaultAsync(x => x.Id == id);
 
-
         if (tile == null)
             return NotFound();
 
 
         tile.Completed = !tile.Completed;
-
 
         await _db.SaveChangesAsync();
 
@@ -58,8 +56,38 @@ public class IndexModel : PageModel
 
         return new JsonResult(new
         {
-            id = tile.Id,
-            completed = tile.Completed
+            success = true
+        });
+    }
+
+
+    public async Task<IActionResult> OnPostUpdateTextAsync(
+        int id,
+        string text)
+    {
+        var tile = await _db.Tiles
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+
+        if (tile == null)
+            return NotFound();
+
+
+        tile.Text = text;
+
+
+        await _db.SaveChangesAsync();
+
+
+        await _hub.Clients.All.SendAsync(
+            "TileTextUpdated",
+            tile.Id,
+            tile.Text);
+
+
+        return new JsonResult(new
+        {
+            success = true
         });
     }
 }
