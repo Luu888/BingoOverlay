@@ -59,3 +59,23 @@ Aplikacja będzie dostępna pod adresem:
 http://localhost:8888
 ```
 
+# 📺 Dodanie do OBS
+
+1. Uruchom aplikację.
+2. W OBS dodaj źródło:
+   
+```bash
+Źródło → Przeglądarka (Browser Source)
+```
+3. Ustaw URL:
+
+```bash
+http://localhost:8888
+```
+
+4. Ustaw rozdzielczość (potem w OBS można zmieniać rozmiar widżetu i on sie skaluje):
+```bash
+700 x 700
+```
+
+5. Gotowe — bingo będzie widoczne na streamie.
