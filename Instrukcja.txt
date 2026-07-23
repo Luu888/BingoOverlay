@@ -1,0 +1,137 @@
+Rozpakowanie archiwum
+
+1. Rozpakuj archiwum BingoOverlay w wybrane miejsce na komputerze.
+
+2. Otwórz folder z aplikacją.
+
+3. Uruchom plik:
+
+BingoOverlay.exe
+
+Nie zamykaj aplikacji podczas transmisji.
+
+
+Konfiguracja Twitch
+
+1. Wejdź na stronę:
+
+https://dev.twitch.tv/console/apps
+
+2. Zaloguj się kontem Twitch.
+
+3. Kliknij:
+
+Register Your Application
+
+4. Uzupełnij dane:
+
+Name:
+BingoOverlay
+
+OAuth Redirect URLs:
+http://localhost:8888/twitch/callback
+
+Category:
+Application Integration
+
+
+5. Po utworzeniu aplikacji skopiuj:
+
+Client ID
+Client Secret
+
+Client Secret wygeneruj przyciskiem:
+
+New Secret
+
+
+Ustawienie danych Twitch
+
+1. Otwórz plik:
+
+appsettings.json
+
+
+2. Uzupełnij dane:
+
+"Twitch": {
+  "ClientId": "TWOJ_CLIENT_ID",
+  "ClientSecret": "TWOJ_CLIENT_SECRET",
+  "RedirectUri": "http://localhost:8888/twitch/callback"
+}
+
+
+3. Zapisz plik.
+
+
+Połączenie z Twitch
+
+1. Uruchom:
+
+BingoOverlay.exe
+
+2. Otwórz w przeglądarce:
+
+http://localhost:8888
+
+3. Kliknij:
+
+Połącz z Twitch
+
+4. Zaloguj się na Twitch i zaakceptuj wymagane uprawnienia.
+
+
+Dodanie Bingo do OBS
+
+1. Otwórz OBS.
+
+2. Dodaj nowe źródło:
+
+Źródła → + → Przeglądarka (Browser Source)
+
+
+3. Ustaw adres:
+
+http://localhost:8888
+
+
+4. Ustaw rozmiar:
+
+Szerokość: 700
+
+Wysokość: 700
+
+
+Komendy Twitch
+
+!bingo <numer>
+
+Przykład:
+
+!bingo 1
+
+Oznacza wybrane pole Bingo.
+
+
+!bingoreset
+
+Resetuje całą planszę.
+
+
+Uprawnienia
+
+Widz:
+- !bingo - brak dostępu
+- !bingoreset - brak dostępu
+
+Moderator:
+- !bingo - dostęp
+
+Streamer:
+- !bingo - dostęp
+- !bingoreset - dostęp
+
+
+Ważne:
+
+Aplikacja BingoOverlay.exe musi być uruchomiona podczas transmisji.
