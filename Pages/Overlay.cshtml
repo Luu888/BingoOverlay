@@ -27,55 +27,64 @@
 <script>
 
     const connection =
-    new signalR.HubConnectionBuilder()
-    .withUrl("/bingoHub")
-    .build();
+        new signalR.HubConnectionBuilder()
+            .withUrl("/bingoHub")
+            .build();
 
 
     connection.on(
-    "TileUpdated",
-    function(id, completed)
-    {
-    const tile =
-    document.querySelector(
-    `[data-id='${id}']`
-    );
+        "TileUpdated",
+        function(id, completed) {
+            const tile =
+                document.querySelector(
+                    `[data-id='${id}']`
+                );
+
+
+            if (tile) {
+                tile.classList.toggle(
+                    "done",
+                    completed
+                );
+            }
+        });
+
 
     connection.on(
-    "TileTextUpdated",
-    function(id,text)
-    {
-
-    const tile =
-    document.querySelector(
-    `[data-id='${id}']`
-    );
+        "TileTextUpdated",
+        function(id, text) {
+            const tile =
+                document.querySelector(
+                    `[data-id='${id}']`
+                );
 
 
-    if(tile)
-    {
-    tile.innerText = text;
-    }
-
-    });
+            if (tile) {
+                tile.innerText = text;
+            }
+        });
 
 
-    if(tile)
-    {
-    tile.classList.toggle(
-    "done",
-    completed
-    );
-    }
-    });
+    connection.on(
+        "BoardReset",
+        function() {
+            console.log("Bingo reset");
+
+
+            document
+                .querySelectorAll(".tile")
+                .forEach(tile => {
+                    tile.classList.remove("done");
+                });
+        });
 
 
     connection.start()
-    .then(() => {
-    console.log("SignalR connected");
-    })
-    .catch(err => {
-    console.error(err);
-    });
+        .then(() => {
+            console.log("SignalR connected");
+        })
+        .catch(err => {
+            console.error(err);
+        });
 
 </script>

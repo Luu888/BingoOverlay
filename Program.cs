@@ -1,6 +1,7 @@
 using BingoOverlay.Data;
 using BingoOverlay.Hubs;
 using BingoOverlay.Models;
+using BingoOverlay.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
@@ -11,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://localhost:8888");
 
 builder.Services.AddRazorPages();
-
+builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<BingoDbContext>(
     options =>
@@ -23,6 +25,12 @@ builder.Services.AddDbContext<BingoDbContext>(
 
 builder.Services.AddSignalR();
 
+builder.Services.AddScoped<BingoService>();
+
+builder.Services.AddHostedService<TwitchEventSubService>();
+
+builder.Services.Configure<TwitchOptions>(
+    builder.Configuration.GetSection("Twitch"));
 
 var app = builder.Build();
 
@@ -31,7 +39,12 @@ app.UseStaticFiles();
 
 app.MapRazorPages();
 
+app.MapControllers();
+
 app.MapHub<BingoHub>("/bingoHub");
+
+
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -47,7 +60,7 @@ using (var scope = app.Services.CreateScope())
             db.Tiles.Add(
                 new BingoTile
                 {
-                    Position = i,
+                    Position = i + 1,
                     Text = $"Pole {i + 1}"
                 });
         }

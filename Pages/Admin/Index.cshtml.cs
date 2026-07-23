@@ -13,9 +13,7 @@ public class IndexModel : PageModel
     private readonly BingoDbContext _db;
     private readonly IHubContext<BingoHub> _hub;
 
-
     public List<BingoTile> Tiles { get; set; } = [];
-
 
     public IndexModel(
         BingoDbContext db,
@@ -25,14 +23,12 @@ public class IndexModel : PageModel
         _hub = hub;
     }
 
-
     public async Task OnGetAsync()
     {
         Tiles = await _db.Tiles
             .OrderBy(x => x.Position)
             .ToListAsync();
     }
-
 
     public async Task<IActionResult> OnPostToggleAsync(int id)
     {
@@ -47,12 +43,10 @@ public class IndexModel : PageModel
 
         await _db.SaveChangesAsync();
 
-
         await _hub.Clients.All.SendAsync(
             "TileUpdated",
             tile.Id,
             tile.Completed);
-
 
         return new JsonResult(new
         {
@@ -65,25 +59,19 @@ public class IndexModel : PageModel
         int id,
         string text)
     {
-        var tile = await _db.Tiles
-            .FirstOrDefaultAsync(x => x.Id == id);
-
+        var tile = await _db.Tiles.FirstOrDefaultAsync(x => x.Id == id);
 
         if (tile == null)
             return NotFound();
 
-
         tile.Text = text;
 
-
         await _db.SaveChangesAsync();
-
 
         await _hub.Clients.All.SendAsync(
             "TileTextUpdated",
             tile.Id,
             tile.Text);
-
 
         return new JsonResult(new
         {

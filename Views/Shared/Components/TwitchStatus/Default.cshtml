@@ -1,0 +1,21 @@
+﻿@model BingoOverlay.Models.TwitchStatusViewModel
+
+
+@if (!Model.Connected)
+{
+    <a class="btn btn-dark"
+       href="/twitch/connect">
+
+        <i class="fa-brands fa-twitch"></i>
+        Połącz Twitch
+    </a>
+}
+else
+{
+    <a class="btn btn-success"
+       href="/twitch/status">
+
+        <i class="fa-brands fa-twitch"></i>
+        @Model.DisplayName
+    </a>
+}
