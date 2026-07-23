@@ -177,7 +177,7 @@ Resetowanie całej planszy:
 ```
 - Reset planszy usuwa wszystkie oznaczenia wykonanych kafelków.
 
-  ### 🔒 Uprawnienia Twitch
+  ### 🔒 Uprawnienia Twitch 
 
 | Rola na kanale | `!bingo` | `!bingoreset` |
 |---|---|---|
