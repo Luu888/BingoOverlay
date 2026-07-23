@@ -12,4 +12,11 @@ public class BingoHub : Hub
             id,
             completed);
     }
+
+    public async Task UpdateAppearance(object appearance)
+    {
+        await Clients.All.SendAsync(
+            "AppearanceUpdated",
+            appearance);
+    }
 }

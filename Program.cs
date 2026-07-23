@@ -47,7 +47,9 @@ app.UseStaticFiles();
 
 app.MapRazorPages();
 
-app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<BingoHub>("/bingoHub");
 
@@ -72,6 +74,23 @@ using (var scope = app.Services.CreateScope())
                     Text = $"Pole {i + 1}"
                 });
         }
+
+        db.SaveChanges();
+    }
+
+    if (!db.BingoAppearance.Any())
+    {
+        db.BingoAppearance.Add(
+            new BingoAppearance
+            {
+                TileColor = "#ff8fd8",
+                TileColorEnd = "#c99cff",
+                CompletedColor = "#7dffb2",
+                CompletedColorEnd = "#32d583",
+                TextColor = "#ffffff",
+                BorderRadius = 22,
+                TileSize = 120
+            });
 
         db.SaveChanges();
     }

@@ -11,22 +11,16 @@ html {
 body {
     margin: 0;
     padding: 0;
-    background: transparent;
-    overflow: hidden;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'Segoe UI',Arial,sans-serif;
 }
-
-
 
 .bingo {
     display: grid;
     grid-template-columns: repeat(5, 120px);
     gap: 12px;
     padding: 25px;
-    justify-content: center;
+    
 }
-
-
 
 .tile {
     position: relative;

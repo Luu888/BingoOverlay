@@ -5,6 +5,19 @@
     Layout = "_OverlayLayout";
 }
 
+<style>
+
+    :root {
+        --tile-start: @Model.Appearance.TileColor;
+        --tile-end: @Model.Appearance.TileColorEnd;
+        --done-start: @Model.Appearance.CompletedColor;
+        --done-end: @Model.Appearance.CompletedColorEnd;
+        --tile-text: @Model.Appearance.TextColor;
+        --radius: @(Model.Appearance.BorderRadius) px;
+        --size: @(Model.Appearance.TileSize) px;
+    }
+
+</style>
 
 <div class="bingo">
 
@@ -23,68 +36,4 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
 
-
-<script>
-
-    const connection =
-        new signalR.HubConnectionBuilder()
-            .withUrl("/bingoHub")
-            .build();
-
-
-    connection.on(
-        "TileUpdated",
-        function(id, completed) {
-            const tile =
-                document.querySelector(
-                    `[data-id='${id}']`
-                );
-
-
-            if (tile) {
-                tile.classList.toggle(
-                    "done",
-                    completed
-                );
-            }
-        });
-
-
-    connection.on(
-        "TileTextUpdated",
-        function(id, text) {
-            const tile =
-                document.querySelector(
-                    `[data-id='${id}']`
-                );
-
-
-            if (tile) {
-                tile.innerText = text;
-            }
-        });
-
-
-    connection.on(
-        "BoardReset",
-        function() {
-            console.log("Bingo reset");
-
-
-            document
-                .querySelectorAll(".tile")
-                .forEach(tile => {
-                    tile.classList.remove("done");
-                });
-        });
-
-
-    connection.start()
-        .then(() => {
-            console.log("SignalR connected");
-        })
-        .catch(err => {
-            console.error(err);
-        });
-
-</script>
+<script src="~/js/overlay.js" asp-append-version="true"></script>

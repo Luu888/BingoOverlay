@@ -1,0 +1,61 @@
+﻿@model BingoOverlay.Models.BingoAppearance
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Dostosowanie wyglądu";
+}
+
+
+<div class="container mt-4">
+
+    <h1>
+        🎨 Dostosowanie wyglądu
+    </h1>
+
+
+    <form asp-controller="Appearance" asp-action="Save" method="post">
+        @Html.AntiForgeryToken()
+
+        <label>Kolor kafelka</label>
+
+        <input type="color"asp-for="TileColor" />
+        <br />
+
+        <label>Drugi kolor kafelka</label>
+        <input type="color" asp-for="TileColorEnd" />
+
+        <br />
+
+        <label> Kolor ukończonego </label>
+
+        <input type="color" asp-for="CompletedColor" />
+
+        <br />
+
+        <label>Drugi kolor ukończonego</label>
+
+        <input type="color" asp-for="CompletedColorEnd" />
+
+        <br />
+
+
+        <label>Kolor tekstu</label>
+        <input type="color" asp-for="TextColor" />
+
+        <br />
+
+        <label> Zaokrąglenie </label>
+        <input type="number" asp-for="BorderRadius" />
+
+        <br />
+
+        <label> Rozmiar kafelka </label>
+
+        <input type="number" asp-for="TileSize" />
+
+        <br /><br />
+
+        <button class="btn btn-success">💾 Zapisz</button>
+    </form>
+
+</div>

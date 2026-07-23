@@ -1,0 +1,62 @@
+﻿.bingo {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, var(--size, 120px)));
+    gap: 10px;
+    justify-content: center;
+}
+
+
+.tile {
+    width: var(--size, 120px);
+    height: var(--size, 120px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: var(--radius, 22px);
+    background: linear-gradient( 135deg, var(--tile-start, #ff8fd8), var(--tile-end, #c99cff) );
+    border: 3px solid rgba(255,255,255,.9);
+    color: var(--tile-text, white);
+    font-size: 18px;
+    font-weight: 800;
+    text-shadow: 0 2px 5px rgba(0,0,0,.3);
+    box-shadow: 0 0 18px rgba(255,105,210,.8), inset 0 0 20px rgba(255,255,255,.25);
+    position: relative;
+    overflow: hidden;
+    transition: transform .25s ease;
+}
+
+
+    .tile::before {
+        content: "";
+        position: absolute;
+        width: 50px;
+        height: 180px;
+        background: rgba(255,255,255,.25);
+        transform: rotate(35deg);
+        left: -60px;
+        top: -40px;
+    }
+
+
+    .tile:hover {
+        transform: scale(1.08);
+    }
+
+
+    .tile.done {
+        background: linear-gradient( 135deg, var(--done-start, #7dffb2), var(--done-end, #32d583) );
+        box-shadow: 0 0 25px rgba(50,213,131,.9), inset 0 0 20px rgba(255,255,255,.35);
+    }
+
+
+        .tile.done::after {
+            content: "✓";
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            font-size: 30px;
+            color: white;
+        }

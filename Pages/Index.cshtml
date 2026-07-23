@@ -1,6 +1,33 @@
 ﻿@page
 @model IndexModel
 
+<style>
+
+    :root {
+        --tile-start: @Model.Appearance.TileColor;
+        --tile-end: @Model.Appearance.TileColorEnd;
+        --done-start: @Model.Appearance.CompletedColor;
+        --done-end: @Model.Appearance.CompletedColorEnd;
+        --tile-text: @Model.Appearance.TextColor;
+        --radius: @(Model.Appearance.BorderRadius) px;
+        --size: @(Model.Appearance.TileSize) px;
+    }
+
+</style>
+
+<style>
+    .bingo {
+        display: grid !important;
+        grid-template-columns: repeat(5, 120px) !important;
+        grid-auto-rows: 120px !important;
+        gap: 10px !important;
+    }
+
+    .tile {
+        border: 1px solid red;
+    }
+</style>
+
 @if (Request.Query["twitch"] == "connected")
 {
     <div class="alert alert-success">

@@ -11,6 +11,8 @@ public class OverlayModel : PageModel
 
     public List<BingoTile> Tiles { get; set; } = [];
 
+    public BingoAppearance Appearance { get; set; } = null!;
+
     public OverlayModel(BingoDbContext db)
     {
         _db = db;
@@ -21,5 +23,7 @@ public class OverlayModel : PageModel
         Tiles = await _db.Tiles
             .OrderBy(x => x.Position)
             .ToListAsync();
+
+        Appearance = await _db.BingoAppearance.FirstAsync() ?? new();
     }
 }

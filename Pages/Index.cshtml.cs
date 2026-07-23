@@ -13,6 +13,8 @@ public class IndexModel : PageModel
 
     public List<BingoTile> Tiles { get; set; } = [];
 
+    public BingoAppearance Appearance { get; set; }
+
 
     public IndexModel(
         BingoDbContext db)
@@ -26,5 +28,7 @@ public class IndexModel : PageModel
         Tiles = await _db.Tiles
             .OrderBy(x => x.Position)
             .ToListAsync();
+
+        Appearance = await _db.BingoAppearance.FirstOrDefaultAsync() ?? new();
     }
 }

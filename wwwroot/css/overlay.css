@@ -8,65 +8,17 @@ body {
     background: transparent;
 }
 
+
 body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'Segoe UI',Arial,sans-serif;
 }
-
-.tile {
-    width: 120px;
-    height: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 10px;
-    box-sizing: border-box;
-    border-radius: 22px;
-    background: linear-gradient( 135deg, #ff8fd8, #c99cff );
-    border: 3px solid rgba(255,255,255,.9);
-    color: white;
-    font-size: 18px;
-    font-weight: 800;
-    text-shadow: 0 2px 5px rgba(0,0,0,.3);
-    box-shadow: 0 0 18px rgba(255,105,210,.8), inset 0 0 20px rgba(255,255,255,.25);
-    position: relative;
-    overflow: hidden;
-}
-
-
-    .tile::before {
-        content: "";
-        position: absolute;
-        width: 50px;
-        height: 180px;
-        background: rgba(255,255,255,.25);
-        transform: rotate(35deg);
-        left: -60px;
-        top: -40px;
-    }
-
-
-    .tile.done {
-        background: linear-gradient( 135deg, #7dffb2, #32d583 );
-        box-shadow: 0 0 25px rgba(50,213,131,.9), inset 0 0 20px rgba(255,255,255,.35);
-    }
-
-
-    .tile.done::after {
-        content: "✓";
-        position: absolute;
-        top: 5px;
-        right: 8px;
-        font-size: 30px;
-        color: white;
-    }
-
 
 .bingo {
     display: grid;
     grid-template-columns: repeat(5, 120px);
+    grid-auto-rows: 120px;
     gap: 10px;
 }
