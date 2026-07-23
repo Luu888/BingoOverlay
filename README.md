@@ -16,7 +16,7 @@ Aplikacja pozwala prowadzić interaktywne bingo podczas transmisji:
 ✅ Aktualizacja pól bez odświeżania strony  
 ✅ Zapisywanie stanu planszy  
 ✅ Możliwość personalizacji wyglądu  
-✅ Backend ASP.NET Core .NET 10  
+✅ Aplikacja webowa ASP.NET Core .NET 10 
 
 ## 🛠 Technologie
 
@@ -67,7 +67,7 @@ Aby korzystać z integracji z Twitch, należy utworzyć własną aplikację deve
 
 1. Wejdź na stronę:
 
-https://dev.twitch.tv/console/apps
+[https://dev.twitch.tv/console/apps](https://dev.twitch.tv/console/apps)
 
 2. Zaloguj się kontem Twitch.
 
@@ -141,7 +141,7 @@ Połączenie jest wykorzystywane do obsługi funkcji Twitch, takich jak:
 http://localhost:8888
 ```
 
-4. Ustaw rozdzielczość (potem w OBS można zmieniać rozmiar widżetu i on sie skaluje):
+4. Ustaw rozdzielczość (potem w OBS można zmieniać rozmiar widżetu, a plansza automatycznie się skaluje):
 ```bash
 700 x 700
 ```
@@ -187,4 +187,10 @@ Resetowanie całej planszy:
 
 Uprawnienia są sprawdzane na podstawie roli użytkownika Twitch wysyłającego wiadomość.
 
+## 📄 License
 
+This project is licensed under the Apache License 2.0.
+
+Copyright © 2026 Luu
+
+All rights reserved.
