@@ -1,0 +1,61 @@
+﻿@model BingoOverlay.Models.TwitchAuth?
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Status Twitch";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-dark text-white">
+            <h3 class="mb-0">🎮 Status połączenia z Twitch</h3>
+        </div>
+
+        <div class="card-body">
+
+            @if (Model == null)
+            {
+                <div class="alert alert-warning">
+                    <strong>Brak połączenia z Twitch.</strong>
+                </div>
+
+                <a href="/twitch/connect" class="btn btn-primary">Połącz z Twitch</a>
+            }
+            else
+            {
+                <div class="alert alert-success">
+                    <strong>Połączono z Twitch.</strong>
+                </div>
+
+                <table class="table table-bordered">
+
+                    <tr>
+                        <th style="width:220px;">Kanał</th>
+                        <td>@Model.DisplayName</td>
+                    </tr>
+
+                    <tr>
+                        <th>Broadcaster ID</th>
+                        <td>@Model.BroadcasterId</td>
+                    </tr>
+
+                    <tr>
+                        <th>Token ważny do</th>
+                        <td>@Model.ExpiresAt.ToLocalTime()</td>
+                    </tr>
+
+                </table>
+
+                <div class="d-flex gap-2">
+                    <a href="/twitch/connect" class="btn btn-warning">Połącz ponownie</a>
+                    <a href="/" class="btn btn-secondary">Powrót</a>
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

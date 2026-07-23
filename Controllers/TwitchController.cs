@@ -86,10 +86,6 @@ public class TwitchController : Controller
         if (token == null)
             return BadRequest("Nie udało się pobrać tokena");
 
-
-
-        // Pobranie danych użytkownika Twitch
-
         client.DefaultRequestHeaders.Clear();
 
         client.DefaultRequestHeaders.Add(
@@ -124,5 +120,13 @@ public class TwitchController : Controller
         await _db.SaveChangesAsync();
 
         return Redirect("/?twitch=connected");
+    }
+
+    [HttpGet("status")]
+    public async Task<IActionResult> Status()
+    {
+        var auth = await _db.TwitchAuth.FirstOrDefaultAsync();
+
+        return View(auth);
     }
 }

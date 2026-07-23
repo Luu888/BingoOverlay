@@ -12,7 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://localhost:8888");
 
 builder.Services.AddRazorPages();
-builder.Services.AddControllers();
+
+builder
+    .Services
+    .AddControllersWithViews()
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationFormats.Add("/Pages/Shared/{0}.cshtml");
+    });
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<BingoDbContext>(
