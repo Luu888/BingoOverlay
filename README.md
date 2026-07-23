@@ -59,6 +59,74 @@ Aplikacja będzie dostępna pod adresem:
 http://localhost:8888
 ```
 
+## 🔐 Konfiguracja Twitch
+
+Aby korzystać z integracji z Twitch, należy utworzyć własną aplikację developerską i uzupełnić dane uwierzytelniające.
+
+### 1. Utworzenie aplikacji Twitch Developer
+
+1. Wejdź na stronę:
+
+https://dev.twitch.tv/console/apps
+
+2. Zaloguj się kontem Twitch.
+
+3. Kliknij:
+```bash
+Register Your Application
+```
+4. Uzupełnij formularz:
+   
+```bash
+Name: BingoOverlay
+OAuth Redirect URLs: http://localhost:8888/twitch/callback
+Category: Application Integration
+```
+5. Kliknij Create
+6. Po utworzeniu aplikacji pojawi się:
+```bash
+- Client ID
+- Client Secret
+```
+Client Secret należy wygenerować przyciskiem **New Secret**
+⚠️ Nie udostępniaj Client Secret publicznie.
+
+### 2. Konfiguracja appsettings.json
+
+1. Otwórz plik **appsettings.json** z folderu gdzie jest aplikacja
+2. Uzupełnij sekcję Twitch
+   
+```bash
+"Twitch": {
+    "ClientId": "TWOJ_CLIENT_ID",
+    "ClientSecret": "TWOJ_CLIENT_SECRET",
+    "RedirectUri": "http://localhost:8888/twitch/callback"
+  }
+```
+Tu przykład:
+
+```bash
+"Twitch": {
+    "ClientId": "abc123xyz",
+    "ClientSecret": "secret-value",
+    "RedirectUri": "http://localhost:8888/twitch/callback"
+  }
+```
+### 3. Połączenie z Twitch
+Po uruchomieniu aplikacji (BingoOverlay.exe):
+
+1. Otwórz stronę aplikacji.
+2. Kliknij przycisk: **Połącz z Twitch**
+3. Nastąpi przekierowanie do strony logowania Twitch
+4. Zaakceptuj wymagane uprawnienia
+5. Po poprawnej autoryzacji aplikacja zostanie połączona z kontem Twitch
+   
+Połączenie jest wykorzystywane do obsługi funkcji Twitch, takich jak:
+
+   odbieranie zdarzeń z kanału,
+   integracja z czatem,
+   automatyczne aktualizowanie bingo.
+
 # 📺 Dodanie do OBS
 
 1. Uruchom aplikację.
