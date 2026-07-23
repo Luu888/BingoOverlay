@@ -147,3 +147,44 @@ http://localhost:8888
 ```
 
 5. Gotowe — bingo będzie widoczne na streamie.
+
+
+## 💬 Dostępne komendy Twitch
+
+Po połączeniu aplikacji z kanałem Twitch dostępne są komendy sterujące planszą Bingo.
+
+### 🎯 Komenda Bingo
+
+| Komenda | Opis | Uprawnienia |
+|---|---|---|
+| `!bingo <numer>` | Oznacza kafelek jako wykonany | Streamer, Moderator |
+| `!bingoreset` | Resetuje całą planszę Bingo | Streamer |
+
+---
+
+### Przykłady użycia
+
+Oznaczenie kafelka numer 1 lub kafelka numer 18:
+```bash
+!bingo 1
+!bingo 18
+```
+- Próba użycia numeru spoza zakresu nie zmienia planszy.
+
+Resetowanie całej planszy:
+```bash
+!bingoreset
+```
+- Reset planszy usuwa wszystkie oznaczenia wykonanych kafelków.
+
+  ### 🔒 Uprawnienia Twitch
+
+| Rola na kanale | `!bingo` | `!bingoreset` |
+|---|---|---|
+| Widz | ❌ | ❌ |
+| Moderator | ✅ | ❌ |
+| Streamer | ✅ | ✅ |
+
+Uprawnienia są sprawdzane na podstawie roli użytkownika Twitch wysyłającego wiadomość.
+
+
