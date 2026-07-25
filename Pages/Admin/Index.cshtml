@@ -14,28 +14,70 @@
 
     <h1>🍬 Bingo Panel</h1>
 
-    <div class="bingo">
+    <div class="admin-layout">
+        <div class="bingo-section">
 
-        @foreach (var tile in Model.Tiles)
-        {
-            <div class="tile-wrapper">
+            <div class="bingo">
 
-                <input class="tile-text" data-id="@tile.Id" value="@tile.Text" />
+                @foreach (var tile in Model.Tiles)
+                {
+                    <div class="tile-wrapper">
 
-                <button class="tile @(tile.Completed ? "done" : "")" data-id="@tile.Id">
-                    <span class="tile-label">
-                        @tile.Text
-                    </span>
-                </button>
+                        <input class="tile-text" data-id="@tile.Id" value="@tile.Text" />
 
-                <button class="save-text" data-id="@tile.Id">💾</button>
+                        <button class="tile @(tile.Completed ? "done" : "")" data-id="@tile.Id">
+                            <span class="tile-label">
+                                @tile.Text
+                            </span>
+                        </button>
+
+                        <button class="save-text" data-id="@tile.Id">
+                            💾
+                        </button>
+
+                    </div>
+                }
 
             </div>
-        }
+
+        </div>
+
+        <div class="settings-section">
+
+            <form method="post" asp-page-handler="SaveSettings">
+
+                <div class="settings-card">
+
+                    <h2>🔐 Uprawnienia</h2>
+
+                    <div class="form-check">
+
+                        <input asp-for="Settings.AllowModerators" class="form-check-input" />
+
+                        <label asp-for="Settings.AllowModerators" class="form-check-label">
+                            Zezwól moderatorom na sterowanie bingo
+                        </label>
+
+                    </div>
+
+                    <small class="text-white">
+                        Broadcaster zawsze posiada uprawnienia do sterowania planszą.
+                    </small>
+
+                    <button class="btn btn-primary mt-3" type="submit">
+                        💾 Zapisz ustawienia
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
 <script src="~/js/admin.js" asp-append-version="true"></script>

@@ -4,6 +4,19 @@
     {
         None,
         Moderator,
-        Broadcaster
+        Broadcaster,
+    }
+
+    public static class TwitchUserPermissionExtensions
+    {
+        public static string ToFriendlyString(this TwitchUserPermission role)
+        {
+            return role switch
+            {
+                TwitchUserPermission.Broadcaster => "broadcaster",
+                TwitchUserPermission.Moderator => "moderator",
+                _ => "unknown"
+            };
+        }
     }
 }

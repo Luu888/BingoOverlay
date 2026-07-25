@@ -15,9 +15,10 @@ public class IndexModel : PageModel
 
     public List<BingoTile> Tiles { get; set; } = [];
 
-    public IndexModel(
-        BingoDbContext db,
-        IHubContext<BingoHub> hub)
+    [BindProperty]
+    public Settings Settings { get; set; } = default!;
+
+    public IndexModel(BingoDbContext db, IHubContext<BingoHub> hub)
     {
         _db = db;
         _hub = hub;
@@ -28,6 +29,15 @@ public class IndexModel : PageModel
         Tiles = await _db.Tiles
             .OrderBy(x => x.Position)
             .ToListAsync();
+
+        Settings = await _db.Settings.FirstOrDefaultAsync();
+
+        if (Settings == null)
+        {
+            Settings = new Settings();
+            _db.Settings.Add(Settings);
+            await _db.SaveChangesAsync();
+        }
     }
 
     public async Task<IActionResult> OnPostToggleAsync(int id)
@@ -55,9 +65,7 @@ public class IndexModel : PageModel
     }
 
 
-    public async Task<IActionResult> OnPostUpdateTextAsync(
-        int id,
-        string text)
+    public async Task<IActionResult> OnPostUpdateTextAsync(int id, string text)
     {
         var tile = await _db.Tiles.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -77,5 +85,16 @@ public class IndexModel : PageModel
         {
             success = true
         });
+    }
+
+    public async Task<IActionResult> OnPostSaveSettingsAsync()
+    {
+        var settings = await _db.Settings.FirstAsync();
+
+        settings.AllowModerators = Settings.AllowModerators;
+
+        await _db.SaveChangesAsync();
+
+        return RedirectToPage();
     }
 }

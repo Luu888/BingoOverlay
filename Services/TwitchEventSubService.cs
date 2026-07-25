@@ -1,7 +1,6 @@
 ﻿using BingoOverlay.Data;
 using BingoOverlay.Models;
 using BingoOverlay.Models.Enums;
-using BingoOverlay.Services;
 using Microsoft.Extensions.Options;
 using System.Net.WebSockets;
 using System.Text;
@@ -68,8 +67,9 @@ public class TwitchEventSubService : BackgroundService
             .GetString();
 
         Console.WriteLine($"CHAT: {message}");
+        var hasPermission = await IsAllowedUserAsync(badges);
 
-        if (!IsAllowedUser(badges))
+        if (!hasPermission)
         {
             Console.WriteLine("Brak uprawnień do komendy");
 
@@ -104,9 +104,7 @@ public class TwitchEventSubService : BackgroundService
         }
     }
 
-    private async Task CreateChatSubscriptionAsync(
-    string sessionId,
-    CancellationToken cancellationToken)
+    private async Task CreateChatSubscriptionAsync(string sessionId, CancellationToken cancellationToken)
     {
         using var scope = _scopeFactory.CreateScope();
 
@@ -191,13 +189,21 @@ public class TwitchEventSubService : BackgroundService
         await bingoService.ResetAsync();
     }
 
-    private static bool IsAllowedUser(JsonElement badges)
+    private async Task<bool> IsAllowedUserAsync(JsonElement badges)
     {
+        using var scope = _scopeFactory.CreateScope();
+
+        var db = scope.ServiceProvider
+            .GetRequiredService<BingoDbContext>();
+
+        var isModeratorAllowed = await db.Settings
+            .AnyAsync(x => x.AllowModerators);
+
         foreach (var badge in badges.EnumerateArray())
         {
             var setId = badge.GetProperty("set_id").GetString();
 
-            if (setId == "broadcaster" || setId == "moderator")
+            if (setId == TwitchUserPermission.Broadcaster.ToFriendlyString() || (setId == TwitchUserPermission.Moderator.ToFriendlyString() && isModeratorAllowed))
                 return true;
         }
 
@@ -212,12 +218,12 @@ public class TwitchEventSubService : BackgroundService
                 .GetProperty("set_id")
                 .GetString();
 
-            if (setId == "broadcaster")
+            if (setId == TwitchUserPermission.Broadcaster.ToFriendlyString())
             {
                 return TwitchUserPermission.Broadcaster;
             }
 
-            if (setId == "moderator")
+            if (setId == TwitchUserPermission.Moderator.ToFriendlyString())
             {
                 return TwitchUserPermission.Moderator;
             }
@@ -236,8 +242,7 @@ public class TwitchEventSubService : BackgroundService
         return await db.TwitchAuth.AnyAsync();
     }
 
-    private async Task RunEventSubAsync(
-    CancellationToken stoppingToken)
+    private async Task RunEventSubAsync(CancellationToken stoppingToken)
     {
         using var socket = new ClientWebSocket();
 
