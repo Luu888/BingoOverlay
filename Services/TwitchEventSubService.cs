@@ -1,11 +1,13 @@
 ﻿using BingoOverlay.Data;
+using BingoOverlay.Hubs;
 using BingoOverlay.Models;
 using BingoOverlay.Models.Enums;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
 
 namespace BingoOverlay.Services;
 
@@ -14,19 +16,24 @@ public class TwitchEventSubService : BackgroundService
     private readonly TwitchOptions _options;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IHubContext<BingoHub> _hubContext;
 
     public TwitchEventSubService(
         IOptions<TwitchOptions> options,
         IHttpClientFactory httpClientFactory,
-        IServiceScopeFactory scopeFactory)
+        IServiceScopeFactory scopeFactory,
+        IHubContext<BingoHub> hubContext)
     {
         _options = options.Value;
         _httpClientFactory = httpClientFactory;
         _scopeFactory = scopeFactory;
+        _hubContext = hubContext;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _ = HideOverlayLoop(stoppingToken);
+
         while (!stoppingToken.IsCancellationRequested)
         {
             if (!await IsTwitchAuthorizedAsync())
@@ -87,7 +94,16 @@ public class TwitchEventSubService : BackgroundService
                 return;
             }
 
+            await UpdateOverlayActivityAsync();
             await HandleBingoResetAsync(cancellationToken);
+
+            return;
+        }
+
+        if (message.Equals("!bingostatus", StringComparison.OrdinalIgnoreCase))
+        {
+            _ = ShowOverlayTemporaryAsync();
+
             return;
         }
 
@@ -99,7 +115,9 @@ public class TwitchEventSubService : BackgroundService
                 return;
             }
 
+            await UpdateOverlayActivityAsync();
             await HandleBingoCommandAsync(message, cancellationToken);
+
             return;
         }
     }
@@ -289,5 +307,111 @@ public class TwitchEventSubService : BackgroundService
                 await HandleNotificationAsync(document, stoppingToken);
             }
         }
+    }
+
+    private async Task UpdateOverlayActivityAsync()
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var db = scope.ServiceProvider
+            .GetRequiredService<BingoDbContext>();
+
+
+        var settings = await db.Settings.FirstAsync();
+
+
+        settings.IsOverlayVisible = true;
+        settings.LastOverlayActivity = DateTime.UtcNow;
+
+
+        await db.SaveChangesAsync();
+
+        await SetOverlayVisibilityAsync(true);
+    }
+
+    private async Task HideOverlayLoop(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            using var scope = _scopeFactory.CreateScope();
+
+            var db = scope.ServiceProvider
+                .GetRequiredService<BingoDbContext>();
+
+            var settings = await db.Settings.FirstAsync();
+
+
+            if (!settings.HideOverlayAfterTime)
+            {
+                if (!settings.IsOverlayVisible)
+                {
+                    settings.IsOverlayVisible = true;
+
+                    await db.SaveChangesAsync();
+
+                    await SetOverlayVisibilityAsync(true);
+                }
+            }
+            else
+            {
+                var hideTime =
+                    settings.LastOverlayActivity
+                    .AddSeconds(settings.HideOverlaySeconds);
+
+
+                if (DateTime.UtcNow > hideTime &&
+                    settings.IsOverlayVisible)
+                {
+                    settings.IsOverlayVisible = false;
+
+                    await db.SaveChangesAsync();
+
+                    await SetOverlayVisibilityAsync(false);
+
+                    Console.WriteLine("Overlay ukryty");
+                }
+            }
+
+
+            await Task.Delay(
+                TimeSpan.FromSeconds(5),
+                token);
+        }
+    }
+
+    private async Task SetOverlayVisibilityAsync(bool visible)
+    {
+        await _hubContext.Clients.All.SendAsync(
+            "OverlayVisibilityChanged",
+            new
+            {
+                type = "overlayVisibility",
+                visible
+            });
+    }
+
+    private async Task ShowOverlayTemporaryAsync()
+    {
+        int seconds;
+
+        using (var scope = _scopeFactory.CreateScope())
+        {
+            var db = scope.ServiceProvider
+                .GetRequiredService<BingoDbContext>();
+
+            var settings = await db.Settings.FirstAsync();
+
+            seconds = settings.HideOverlaySeconds;
+        }
+
+
+        await SetOverlayVisibilityAsync(true);
+
+
+        await Task.Delay(
+            TimeSpan.FromSeconds(seconds));
+
+
+        await SetOverlayVisibilityAsync(false);
     }
 }

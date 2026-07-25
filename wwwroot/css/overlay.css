@@ -16,6 +16,18 @@ body {
     font-family: 'Segoe UI',Arial,sans-serif;
 }
 
+
+#overlay-container {
+    transition: opacity .5s ease;
+}
+
+
+.overlay-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
 .bingo {
     display: grid;
     grid-template-columns: repeat(5, 120px);

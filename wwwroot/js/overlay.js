@@ -107,6 +107,29 @@ connection.on(
 
     });
 
+connection.on(
+    "OverlayVisibilityChanged",
+    function (data) {
+
+        console.log("Overlay visibility:", data);
+
+
+        if (data.visible) {
+
+            document.body.classList.remove(
+                "overlay-hidden"
+            );
+
+        } else {
+
+            document.body.classList.add(
+                "overlay-hidden"
+            );
+
+        }
+
+    });
+
 connection.start()
     .then(() => {
         console.log("SignalR connected");

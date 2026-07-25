@@ -92,8 +92,32 @@ public class IndexModel : PageModel
         var settings = await _db.Settings.FirstAsync();
 
         settings.AllowModerators = Settings.AllowModerators;
+        settings.HideOverlayAfterTime = Settings.HideOverlayAfterTime;
+        settings.HideOverlaySeconds = Math.Max(Settings.HideOverlaySeconds, 5);
+
+
+        if (!settings.HideOverlayAfterTime)
+        {
+            settings.IsOverlayVisible = true;
+        }
+        else
+        {
+            settings.IsOverlayVisible = true;
+            settings.LastOverlayActivity = DateTime.UtcNow;
+        }
+
 
         await _db.SaveChangesAsync();
+
+
+        await _hub.Clients.All.SendAsync(
+            "OverlayVisibilityChanged",
+            new
+            {
+                type = "overlayVisibility",
+                visible = settings.IsOverlayVisible
+            });
+
 
         return RedirectToPage();
     }
