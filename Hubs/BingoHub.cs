@@ -19,4 +19,15 @@ public class BingoHub : Hub
             "AppearanceUpdated",
             appearance);
     }
+
+    public async Task SetOverlayVisibility(bool visible)
+    {
+        await Clients.All.SendAsync(
+            "OverlayVisibilityChanged",
+            new
+            {
+                type = "overlayVisibility",
+                visible
+            });
+    }
 }

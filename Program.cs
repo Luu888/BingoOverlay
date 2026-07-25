@@ -94,6 +94,23 @@ using (var scope = app.Services.CreateScope())
 
         db.SaveChanges();
     }
+
+    if (!db.Settings.Any())
+    {
+        db.Settings.Add(
+            new Settings
+            {
+                AllowModerators = true,
+
+                HideOverlayAfterTime = false,
+                HideOverlaySeconds = 60,
+
+                IsOverlayVisible = true,
+                LastOverlayActivity = DateTime.UtcNow
+            });
+
+        db.SaveChanges();
+    }
 }
 
 app.Lifetime.ApplicationStarted.Register(() =>

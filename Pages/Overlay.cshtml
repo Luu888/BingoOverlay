@@ -18,19 +18,20 @@
     }
 
 </style>
+<div id="overlay-container">
+    <div class="bingo">
 
-<div class="bingo">
+        @foreach (var tile in Model.Tiles)
+        {
+            <div class="tile @(tile.Completed ? "done" : "")"
+                 data-id="@tile.Id">
 
-    @foreach (var tile in Model.Tiles)
-    {
-        <div class="tile @(tile.Completed ? "done" : "")"
-             data-id="@tile.Id">
+                @tile.Text
 
-            @tile.Text
+            </div>
+        }
 
-        </div>
-    }
-
+    </div>
 </div>
 
 
