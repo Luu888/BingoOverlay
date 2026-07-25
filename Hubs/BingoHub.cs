@@ -1,10 +1,34 @@
-﻿using Microsoft.AspNetCore.SignalR;
-
+﻿using BingoOverlay.Data;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 namespace BingoOverlay.Hubs;
 
 
 public class BingoHub : Hub
 {
+    private readonly BingoDbContext _db;
+
+    public BingoHub(BingoDbContext db)
+    {
+        _db = db;
+    }
+
+    public override async Task OnConnectedAsync()
+    {
+        var settings = await _db.Settings
+            .FirstOrDefaultAsync();
+
+        await Clients.Caller.SendAsync(
+            "OverlayVisibilityChanged",
+            new
+            {
+                type = "overlayVisibility",
+                visible = settings?.IsOverlayVisible ?? true
+            });
+
+        await base.OnConnectedAsync();
+    }
+
     public async Task UpdateTile(int id, bool completed)
     {
         await Clients.All.SendAsync(
