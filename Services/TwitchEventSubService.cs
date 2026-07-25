@@ -108,9 +108,7 @@ public class TwitchEventSubService : BackgroundService
     {
         using var scope = _scopeFactory.CreateScope();
 
-        var db = scope.ServiceProvider.GetRequiredService<BingoDbContext>();
-
-        var auth = await db.TwitchAuth.FirstOrDefaultAsync(cancellationToken);
+        var auth = await GetValidTwitchAuthAsync();
 
         if (auth == null)
         {
@@ -234,12 +232,9 @@ public class TwitchEventSubService : BackgroundService
 
     private async Task<bool> IsTwitchAuthorizedAsync()
     {
-        using var scope = _scopeFactory.CreateScope();
+        var auth = await GetValidTwitchAuthAsync();
 
-        var db = scope.ServiceProvider
-            .GetRequiredService<BingoDbContext>();
-
-        return await db.TwitchAuth.AnyAsync();
+        return auth != null;
     }
 
     private async Task RunEventSubAsync(CancellationToken stoppingToken)
@@ -289,5 +284,68 @@ public class TwitchEventSubService : BackgroundService
                 await HandleNotificationAsync(document, stoppingToken);
             }
         }
+    }
+
+    private async Task<TwitchAuth?> GetValidTwitchAuthAsync()
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var db = scope.ServiceProvider
+            .GetRequiredService<BingoDbContext>();
+
+        var auth = await db.TwitchAuth.FirstOrDefaultAsync();
+
+
+        if (auth == null)
+            return null;
+
+        if (auth.ExpiresAt > DateTime.UtcNow.AddMinutes(5))
+        {
+            return auth;
+        }
+
+        Console.WriteLine("Token Twitch wygasł - odświeżam");
+
+        var client = _httpClientFactory.CreateClient();
+
+        var response = await client.PostAsync(
+            "https://id.twitch.tv/oauth2/token",
+            new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    ["client_id"] = _options.ClientId,
+                    ["client_secret"] = _options.ClientSecret,
+                    ["grant_type"] = "refresh_token",
+                    ["refresh_token"] = auth.RefreshToken
+                }));
+
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Nie udało się odświeżyć tokena Twitch");
+
+            return null;
+        }
+
+        var json = await response.Content.ReadAsStringAsync();
+        var token = JsonSerializer.Deserialize<TwitchTokenResponse>(json);
+
+        if (token == null)
+            return null;
+
+        auth.AccessToken = token.AccessToken;
+
+        if (!string.IsNullOrEmpty(token.RefreshToken))
+        {
+            auth.RefreshToken = token.RefreshToken;
+        }
+
+        auth.ExpiresAt = DateTime.UtcNow.AddSeconds(token.ExpiresIn);
+
+        await db.SaveChangesAsync();
+
+        Console.WriteLine("Token Twitch odświeżony");
+
+        return auth;
     }
 }
