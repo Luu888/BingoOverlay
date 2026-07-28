@@ -102,3 +102,19 @@ body {
 .tile.done {
     animation: pop .4s ease;
 }
+
+.tile-text {
+    position: relative;
+    z-index: 1;
+}
+
+.tile-number {
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    font-size: 12px;
+    font-weight: 900;
+    color: black;
+    text-shadow: none;
+    opacity: .7;
+}

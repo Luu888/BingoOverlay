@@ -34,3 +34,21 @@ body {
     grid-auto-rows: 120px;
     gap: 10px;
 }
+
+.tile {
+    position: relative;
+}
+
+.tile-number {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    font-size: 14px;
+    font-weight: 900;
+    color: black;
+    opacity: .8;
+}
+
+.tile-text {
+    text-align: center;
+}

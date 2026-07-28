@@ -25,14 +25,19 @@ connection.on(
 connection.on(
     "TileTextUpdated",
     function (id, text) {
+
         const tile =
             document.querySelector(
                 `[data-id='${id}']`
             );
 
-
         if (tile) {
-            tile.innerText = text;
+            const textElement =
+                tile.querySelector(".tile-text");
+
+            if (textElement) {
+                textElement.innerText = text;
+            }
         }
     });
 

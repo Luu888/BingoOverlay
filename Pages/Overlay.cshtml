@@ -26,7 +26,13 @@
             <div class="tile @(tile.Completed ? "done" : "")"
                  data-id="@tile.Id">
 
-                @tile.Text
+                <span class="tile-number">
+                    @tile.Position
+                </span>
+
+                <span class="tile-text">
+                    @tile.Text
+                </span>
 
             </div>
         }
