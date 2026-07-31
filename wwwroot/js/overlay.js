@@ -2,11 +2,23 @@
     new signalR.HubConnectionBuilder()
         .withUrl("/bingoHub")
         .build();
+function playSound(id) {
 
+    const audio = document.getElementById(id);
+
+    if (audio) {
+        audio.currentTime = 0;
+        audio.play()
+            .catch(err => {
+                console.log("Audio blocked:", err);
+            });
+    }
+}
 
 connection.on(
     "TileUpdated",
     function (id, completed) {
+
         const tile =
             document.querySelector(
                 `[data-id='${id}']`
@@ -14,10 +26,17 @@ connection.on(
 
 
         if (tile) {
+
             tile.classList.toggle(
                 "done",
                 completed
             );
+
+
+            if (completed) {
+                playSound("tileSound");
+            }
+
         }
     });
 
@@ -132,6 +151,29 @@ connection.on(
             );
 
         }
+
+    });
+
+connection.on(
+    "BingoAchieved",
+    function () {
+
+        console.log("BINGO!");
+
+        playSound("bingoSound");
+
+        document.body.classList.add(
+            "bingo-animation"
+        );
+
+
+        setTimeout(() => {
+
+            document.body.classList.remove(
+                "bingo-animation"
+            );
+
+        }, 5000);
 
     });
 
