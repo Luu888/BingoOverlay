@@ -1,6 +1,7 @@
 using BingoOverlay.Data;
 using BingoOverlay.Hubs;
 using BingoOverlay.Models;
+using BingoOverlay.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
@@ -12,16 +13,20 @@ public class IndexModel : PageModel
 {
     private readonly BingoDbContext _db;
     private readonly IHubContext<BingoHub> _hub;
+    private readonly BingoService _bingoService;
 
     public List<BingoTile> Tiles { get; set; } = [];
 
     [BindProperty]
     public Settings Settings { get; set; } = default!;
 
-    public IndexModel(BingoDbContext db, IHubContext<BingoHub> hub)
+    public IndexModel(BingoDbContext db, 
+        IHubContext<BingoHub> hub,
+        BingoService bingoService)
     {
         _db = db;
         _hub = hub;
+        _bingoService = bingoService;
     }
 
     public async Task OnGetAsync()
@@ -42,21 +47,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostToggleAsync(int id)
     {
-        var tile = await _db.Tiles
-            .FirstOrDefaultAsync(x => x.Id == id);
-
-        if (tile == null)
-            return NotFound();
-
-
-        tile.Completed = !tile.Completed;
-
-        await _db.SaveChangesAsync();
-
-        await _hub.Clients.All.SendAsync(
-            "TileUpdated",
-            tile.Id,
-            tile.Completed);
+        await _bingoService.ToggleTileAsync(id);
 
         return new JsonResult(new
         {

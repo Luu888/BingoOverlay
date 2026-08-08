@@ -177,6 +177,44 @@ connection.on(
 
     });
 
+connection.on(
+    "BoardShuffled",
+    function (tiles) {
+
+        const bingo = document.querySelector(".bingo");
+
+        if (!bingo) {
+            return;
+        }
+
+        bingo.innerHTML = "";
+
+        tiles.forEach(tile => {
+
+            const element = document.createElement("div");
+
+            element.classList.add("tile");
+
+            if (tile.completed) {
+                element.classList.add("done");
+            }
+
+            element.dataset.id = tile.id;
+
+            element.innerHTML = `
+                <span class="tile-number">
+                    ${tile.position}
+                </span>
+
+                <span class="tile-text">
+                    ${escapeHtml(tile.text)}
+                </span>
+            `;
+
+            bingo.appendChild(element);
+        });
+    });
+
 connection.start()
     .then(() => {
         console.log("SignalR connected");
@@ -184,3 +222,10 @@ connection.start()
     .catch(err => {
         console.error(err);
     });
+
+
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
