@@ -1,5 +1,6 @@
 ﻿using BingoOverlay.Data;
 using BingoOverlay.Hubs;
+using BingoOverlay.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,30 +23,13 @@ public class BingoService
 
     public async Task ToggleTileByPositionAsync(int position)
     {
-        var tile = await _db
-            .Tiles
-            .FirstOrDefaultAsync(x => x.Position == position);
+        var tile = await _db.Tiles
+        .FirstOrDefaultAsync(x => x.Position == position);
 
         if (tile == null)
             return;
 
-        tile.Completed = !tile.Completed;
-
-        await _db.SaveChangesAsync();
-
-        await _hub.Clients.All.SendAsync(
-            "TileUpdated",
-            tile.Id,
-            tile.Completed);
-
-        var isBingo = await CheckBingoAsync();
-
-        if (isBingo)
-        {
-            await _hub.Clients.All.SendAsync(
-                "BingoAchieved"
-            );
-        }
+        await ToggleTileAsync(tile);
     }
 
     public async Task ResetAsync()
@@ -64,12 +48,73 @@ public class BingoService
         await _hub.Clients.All.SendAsync("BoardReset");
     }
 
+    public async Task ShuffleAsync()
+    {
+        var tiles = await _db.Tiles
+            .OrderBy(x => x.Position)
+            .ToListAsync();
+
+        var shuffledTiles = tiles
+            .OrderBy(_ => Random.Shared.Next())
+            .ToList();
+
+        for (var i = 0; i < shuffledTiles.Count; i++)
+        {
+            shuffledTiles[i].Position = i + 1;
+            shuffledTiles[i].Completed = false;
+        }
+
+        await _db.SaveChangesAsync();
+
+        await _hub.Clients.All.SendAsync(
+            "BoardShuffled",
+            shuffledTiles
+                .OrderBy(x => x.Position)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Position,
+                    x.Text,
+                    x.Completed
+                }));
+    }
+
+    public async Task ToggleTileAsync(int id)
+    {
+        var tile = await _db.Tiles
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (tile == null)
+            return;
+
+        await ToggleTileAsync(tile);
+    }
+
+    private async Task ToggleTileAsync(BingoTile tile)
+    {
+        tile.Completed = !tile.Completed;
+
+        await _db.SaveChangesAsync();
+
+        await _hub.Clients.All.SendAsync(
+            "TileUpdated",
+            tile.Id,
+            tile.Completed);
+
+        var isBingo = await CheckBingoAsync();
+
+        if (isBingo)
+        {
+            await _hub.Clients.All.SendAsync(
+                "BingoAchieved");
+        }
+    }
+
     private async Task<bool> CheckBingoAsync()
     {
         var tiles = await _db.Tiles
-            .OrderBy(x => x.Id)
+            .OrderBy(x => x.Position)
             .ToListAsync();
-
 
         if (tiles.Count != 25)
             return false;
@@ -137,9 +182,6 @@ public class BingoService
             }
         }
 
-        if (diagonal2)
-            return true;
-
-        return false;
+        return diagonal2;
     }
 }

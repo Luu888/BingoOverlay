@@ -116,6 +116,20 @@ public class TwitchEventSubService : BackgroundService
             return;
         }
 
+        if (message.Equals("!bingolosuj", StringComparison.OrdinalIgnoreCase))
+        {
+            if (permission != TwitchUserPermission.Broadcaster)
+            {
+                Console.WriteLine("Brak uprawnień do losowania bingo");
+                return;
+            }
+
+            await UpdateOverlayActivityAsync();
+            await HandleBingoShuffleAsync(cancellationToken);
+
+            return;
+        }
+
         if (message.StartsWith("!bingo ", StringComparison.OrdinalIgnoreCase))
         {
             if (permission == TwitchUserPermission.None)
@@ -129,6 +143,18 @@ public class TwitchEventSubService : BackgroundService
 
             return;
         }
+    }
+
+    private async Task HandleBingoShuffleAsync(CancellationToken cancellationToken)
+    {
+        Console.WriteLine("Losuję bingo");
+
+        using var scope = _scopeFactory.CreateScope();
+
+        var bingoService = scope.ServiceProvider
+            .GetRequiredService<BingoService>();
+
+        await bingoService.ShuffleAsync();
     }
 
     private async Task CreateChatSubscriptionAsync(string sessionId, CancellationToken cancellationToken)
