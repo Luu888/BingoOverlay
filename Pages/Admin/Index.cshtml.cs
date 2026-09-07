@@ -83,6 +83,7 @@ public class IndexModel : PageModel
         var settings = await _db.Settings.FirstAsync();
 
         settings.AllowModerators = Settings.AllowModerators;
+        settings.AllowVips = Settings.AllowVips;
         settings.HideOverlayAfterTime = Settings.HideOverlayAfterTime;
         settings.HideOverlaySeconds = Math.Max(Settings.HideOverlaySeconds, 5);
 

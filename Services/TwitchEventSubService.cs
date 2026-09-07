@@ -256,11 +256,14 @@ public class TwitchEventSubService : BackgroundService
         var isModeratorAllowed = await db.Settings
             .AnyAsync(x => x.AllowModerators);
 
+        var isVipAllowed = await db.Settings
+            .AnyAsync(x => x.AllowVips);
+
         foreach (var badge in badges.EnumerateArray())
         {
             var setId = badge.GetProperty("set_id").GetString();
 
-            if (setId == TwitchUserPermission.Broadcaster.ToFriendlyString() || (setId == TwitchUserPermission.Moderator.ToFriendlyString() && isModeratorAllowed))
+            if (setId == TwitchUserPermission.Broadcaster.ToFriendlyString() || (setId == TwitchUserPermission.Moderator.ToFriendlyString() && isModeratorAllowed) || (setId == TwitchUserPermission.Vip.ToFriendlyString() && isVipAllowed))
                 return true;
         }
 
