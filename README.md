@@ -180,7 +180,7 @@ Resetowanie całej planszy:
   ### 🔒 Uprawnienia Twitch 
 
 | Rola na kanale | `!bingo` | `!bingoreset` | `!binglosuj` |
-|---|---|---|
+|---|---|---|---|
 | Widz | ❌ | ❌ | ❌ |
 | Moderator | ✅ | ❌ | ❌ |
 | Streamer | ✅ | ✅ | ✅ |
