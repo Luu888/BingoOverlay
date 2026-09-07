@@ -5,6 +5,7 @@
         None,
         Moderator,
         Broadcaster,
+        Vip,
     }
 
     public static class TwitchUserPermissionExtensions
@@ -15,6 +16,7 @@
             {
                 TwitchUserPermission.Broadcaster => "broadcaster",
                 TwitchUserPermission.Moderator => "moderator",
+                TwitchUserPermission.Vip => "vip",
                 _ => "unknown"
             };
         }

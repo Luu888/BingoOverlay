@@ -5,6 +5,7 @@
         public int Id { get; set; }
 
         public bool AllowModerators { get; set; } = true;
+        public bool AllowVips { get; set; } = false;
 
         public bool HideOverlayAfterTime { get; set; }
 

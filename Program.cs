@@ -59,11 +59,11 @@ app.MapHub<BingoHub>("/bingoHub");
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider
-                  .GetRequiredService<BingoDbContext>();
+        .GetRequiredService<BingoDbContext>();
 
-    db.Database.EnsureCreated();
+    await db.Database.MigrateAsync();
 
-    if (!db.Tiles.Any())
+    if (!await db.Tiles.AnyAsync())
     {
         for (int i = 0; i < 25; i++)
         {
@@ -75,10 +75,10 @@ using (var scope = app.Services.CreateScope())
                 });
         }
 
-        db.SaveChanges();
+        await db.SaveChangesAsync();
     }
 
-    if (!db.BingoAppearance.Any())
+    if (!await db.BingoAppearance.AnyAsync())
     {
         db.BingoAppearance.Add(
             new BingoAppearance
@@ -92,24 +92,23 @@ using (var scope = app.Services.CreateScope())
                 TileSize = 120
             });
 
-        db.SaveChanges();
+        await db.SaveChangesAsync();
     }
 
-    if (!db.Settings.Any())
+    if (!await db.Settings.AnyAsync())
     {
         db.Settings.Add(
             new Settings
             {
                 AllowModerators = true,
-
+                AllowVips = false,
                 HideOverlayAfterTime = false,
                 HideOverlaySeconds = 60,
-
                 IsOverlayVisible = true,
                 LastOverlayActivity = DateTime.UtcNow
             });
 
-        db.SaveChanges();
+        await db.SaveChangesAsync();
     }
 }
 
