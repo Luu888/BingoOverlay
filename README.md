@@ -159,7 +159,7 @@ Po połączeniu aplikacji z kanałem Twitch dostępne są komendy sterujące pla
 |---|---|---|
 | `!bingo <numer>` | Oznacza kafelek jako wykonany | Streamer, Moderator |
 | `!bingoreset` | Resetuje całą planszę Bingo | Streamer |
-
+| `!bingolosuj` | Układa losowo kafelki | Streamer |
 ---
 
 ### Przykłady użycia
@@ -179,11 +179,11 @@ Resetowanie całej planszy:
 
   ### 🔒 Uprawnienia Twitch 
 
-| Rola na kanale | `!bingo` | `!bingoreset` |
+| Rola na kanale | `!bingo` | `!bingoreset` | `!binglosuj` |
 |---|---|---|
-| Widz | ❌ | ❌ |
-| Moderator | ✅ | ❌ |
-| Streamer | ✅ | ✅ |
+| Widz | ❌ | ❌ | ❌ |
+| Moderator | ✅ | ❌ | ❌ |
+| Streamer | ✅ | ✅ | ✅ |
 
 Uprawnienia są sprawdzane na podstawie roli użytkownika Twitch wysyłającego wiadomość.
 
