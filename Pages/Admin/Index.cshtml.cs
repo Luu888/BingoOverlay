@@ -14,6 +14,7 @@ public class IndexModel : PageModel
     private readonly BingoDbContext _db;
     private readonly IHubContext<BingoHub> _hub;
     private readonly BingoService _bingoService;
+    private readonly CountdownService _countdownService;
 
     public List<BingoTile> Tiles { get; set; } = [];
 
@@ -22,11 +23,13 @@ public class IndexModel : PageModel
 
     public IndexModel(BingoDbContext db, 
         IHubContext<BingoHub> hub,
-        BingoService bingoService)
+        BingoService bingoService,
+        CountdownService countdownService)
     {
         _db = db;
         _hub = hub;
         _bingoService = bingoService;
+        _countdownService = countdownService;
     }
 
     public async Task OnGetAsync()
@@ -112,5 +115,61 @@ public class IndexModel : PageModel
 
 
         return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostSetCountdownDurationAsync(int minutes)
+    {
+        await _countdownService.SetDurationAsync(minutes);
+
+        return new JsonResult(new
+        {
+            success = true
+        });
+    }
+
+    public async Task<IActionResult> OnPostStartCountdownAsync()
+    {
+        await _countdownService.StartAsync();
+
+        return new JsonResult(new
+        {
+            success = true
+        });
+    }
+
+    public async Task<IActionResult> OnPostPauseCountdownAsync()
+    {
+        await _countdownService.PauseAsync();
+
+        return new JsonResult(new
+        {
+            success = true
+        });
+    }
+
+    public async Task<IActionResult> OnPostResetCountdownAsync()
+    {
+        await _countdownService.ResetAsync();
+
+        return new JsonResult(new
+        {
+            success = true
+        });
+    }
+
+    public async Task<IActionResult> OnPostSaveCountdownAppearanceAsync(
+        string digitColor,
+        string backgroundColor,
+        bool transparentBackground)
+    {
+        await _countdownService.UpdateAppearanceAsync(
+            digitColor,
+            backgroundColor,
+            transparentBackground);
+
+        return new JsonResult(new
+        {
+            success = true
+        });
     }
 }

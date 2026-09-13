@@ -1,4 +1,5 @@
 ﻿using BingoOverlay.Data;
+using BingoOverlay.Services;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 namespace BingoOverlay.Hubs;
@@ -7,10 +8,12 @@ namespace BingoOverlay.Hubs;
 public class BingoHub : Hub
 {
     private readonly BingoDbContext _db;
+    private readonly CountdownService _countdownService;
 
-    public BingoHub(BingoDbContext db)
+    public BingoHub(BingoDbContext db, CountdownService countdownService)
     {
         _db = db;
+        _countdownService = countdownService;
     }
 
     public override async Task OnConnectedAsync()
@@ -53,5 +56,25 @@ public class BingoHub : Hub
                 type = "overlayVisibility",
                 visible
             });
+    }
+
+    public async Task SetCountdownDuration(int minutes)
+    {
+        await _countdownService.SetDurationAsync(minutes);
+    }
+
+    public async Task StartCountdown()
+    {
+        await _countdownService.StartAsync();
+    }
+
+    public async Task PauseCountdown()
+    {
+        await _countdownService.PauseAsync();
+    }
+
+    public async Task ResetCountdown()
+    {
+        await _countdownService.ResetAsync();
     }
 }
