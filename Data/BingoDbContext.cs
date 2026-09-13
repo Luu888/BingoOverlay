@@ -15,4 +15,5 @@ public class BingoDbContext : DbContext
     public DbSet<TwitchAuth> TwitchAuth { get; set; }
     public DbSet<BingoAppearance> BingoAppearance { get; set; }
     public DbSet<Settings> Settings { get; set; }
+    public DbSet<CountdownSettings> CountdownSettings { get; set; }
 }

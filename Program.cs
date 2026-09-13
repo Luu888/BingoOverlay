@@ -34,6 +34,7 @@ builder.Services.AddDbContext<BingoDbContext>(
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<BingoService>();
+builder.Services.AddScoped<CountdownService>();
 
 builder.Services.AddHostedService<TwitchEventSubService>();
 

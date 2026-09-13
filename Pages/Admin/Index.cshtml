@@ -51,7 +51,6 @@
                     <h2>🔐 Uprawnienia</h2>
 
                     <div class="form-check">
-
                         <input asp-for="Settings.AllowModerators"
                                class="form-check-input" />
 
@@ -59,11 +58,9 @@
                                class="form-check-label">
                             Zezwól moderatorom na sterowanie bingo
                         </label>
-
                     </div>
 
                     <div class="form-check">
-
                         <input asp-for="Settings.AllowVips"
                                class="form-check-input" />
 
@@ -71,39 +68,38 @@
                                class="form-check-label">
                             Zezwól VIPom na sterowanie bingo
                         </label>
-
                     </div>
 
                     <small class="text-white">
                         Broadcaster zawsze posiada uprawnienia do sterowania planszą.
                     </small>
 
-
                     <hr class="my-4" />
-
 
                     <h2>👁️ Overlay</h2>
 
-
                     <div class="form-check">
+                        <input asp-for="Settings.HideOverlayAfterTime"
+                               class="form-check-input" />
 
-                        <input asp-for="Settings.HideOverlayAfterTime" class="form-check-input" />
-
-                        <label asp-for="Settings.HideOverlayAfterTime" class="form-check-label">
+                        <label asp-for="Settings.HideOverlayAfterTime"
+                               class="form-check-label">
                             Ukrywaj bingo po czasie bez aktywności
                         </label>
-
                     </div>
 
                     <div class="mt-3">
 
-                        <label asp-for="Settings.HideOverlaySeconds" class="form-label">
+                        <label asp-for="Settings.HideOverlaySeconds"
+                               class="form-label">
                             Ukryj po ilu sekundach
                         </label>
 
-
-                        <input asp-for="Settings.HideOverlaySeconds" class="form-control" type="number" min="5" max="3600" />
-
+                        <input asp-for="Settings.HideOverlaySeconds"
+                               class="form-control"
+                               type="number"
+                               min="5"
+                               max="3600" />
 
                         <small class="text-white">
                             Wpisanie !bingostatus na czacie ponownie pokaże overlay.
@@ -118,6 +114,107 @@
                 </div>
 
             </form>
+
+
+            <!-- COUNTDOWN -->
+
+            <div class="settings-card mt-2">
+
+                <h2>⏱️ Odliczanie do startu streama</h2>
+
+                <div class="mb-3">
+
+                    <button type="button"
+                            class="btn btn-primary countdown-duration"
+                            data-minutes="10">
+                        10 minut
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-primary countdown-duration"
+                            data-minutes="5">
+                        5 minut
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-primary countdown-duration"
+                            data-minutes="3">
+                        3 minuty
+                    </button>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <button type="button"
+                            class="btn btn-success"
+                            id="startCountdown">
+                        Start
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-warning"
+                            id="pauseCountdown">
+                        Pauza
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-danger"
+                            id="resetCountdown">
+                        Reset
+                    </button>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label for="countdownDigitColor"
+                           class="form-label">
+                        Kolor cyfr
+                    </label>
+
+                    <input type="color"
+                           id="countdownDigitColor"
+                           value="#ffffff"
+                           class="form-control form-control-color" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label for="countdownBackgroundColor"
+                           class="form-label">
+                        Kolor tła
+                    </label>
+
+                    <input type="color"
+                           id="countdownBackgroundColor"
+                           value="#000000"
+                           class="form-control form-control-color" />
+
+                </div>
+
+                <div class="form-check mb-3">
+
+                    <input type="checkbox"
+                           class="form-check-input"
+                           id="countdownTransparentBackground"
+                           checked />
+
+                    <label class="form-check-label"
+                           for="countdownTransparentBackground">
+                        Przezroczyste tło
+                    </label>
+
+                </div>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        id="saveCountdownAppearance">
+                    💾 Zapisz wygląd
+                </button>
+
+            </div>
 
         </div>
 

@@ -1,0 +1,30 @@
+﻿@page
+@using BingoOverlay.Services
+@model CountdownModel
+
+@{
+    Layout = "_OverlayLayout";
+}
+
+<div class="countdown-container">
+    <div class="countdown-time" id="countdownTime">
+        00:00
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+<script src="~/js/countdown.js" asp-append-version="true"></script>
+
+<script>
+    window.initialCountdown = {
+        durationSeconds: @Model.Settings.DurationSeconds,
+        remainingSeconds: @CountdownService.GetRemainingSeconds(Model.Settings),
+        isRunning: @Model.Settings.IsRunning.ToString().ToLowerInvariant(),
+        endsAt: @(Model.Settings.EndsAt.HasValue
+                        ? $"'{Model.Settings.EndsAt.Value:O}'"
+                        : "null"),
+        digitColor: '@Model.Settings.DigitColor',
+        backgroundColor: '@Model.Settings.BackgroundColor',
+        transparentBackground: @Model.Settings.TransparentBackground.ToString().ToLowerInvariant()
+    };
+</script>
