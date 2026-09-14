@@ -118,31 +118,32 @@
 
             <!-- COUNTDOWN -->
 
-            <div class="settings-card mt-2">
+            <div class="settings-card mb-3 mt-2">
 
-                <h2>⏱️ Odliczanie do startu streama</h2>
+                <label for="countdownMinutes" class="form-label">
+                    Czas odliczania (minuty)
+                </label>
 
-                <div class="mb-3">
+                <div class="countdown-duration-input mb-2">
+
+                    <input type="number"
+                           id="countdownMinutes"
+                           class="form-control"
+                           min="1"
+                           max="1440"
+                           step="1"
+                           value="3"
+                           placeholder="Wpisz liczbę minut" />
 
                     <button type="button"
-                            class="btn btn-primary countdown-duration"
-                            data-minutes="10">
-                        10 minut
-                    </button>
-
-                    <button type="button"
-                            class="btn btn-primary countdown-duration"
-                            data-minutes="5">
-                        5 minut
-                    </button>
-
-                    <button type="button"
-                            class="btn btn-primary countdown-duration"
-                            data-minutes="3">
-                        3 minuty
+                            class="btn btn-primary"
+                            id="setCountdownDuration">
+                        Ustaw czas
                     </button>
 
                 </div>
+
+            
 
                 <div class="mb-3">
 
@@ -211,11 +212,11 @@
                 <button type="button"
                         class="btn btn-primary"
                         id="saveCountdownAppearance">
-                    💾 Zapisz wygląd
+                    💾 Zapisz wygląd odliczania
                 </button>
 
             </div>
-
+        </div>
         </div>
 
     </div>

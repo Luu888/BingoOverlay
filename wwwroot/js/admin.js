@@ -69,27 +69,34 @@ connection.start().then(() => {
     console.error(err);
 });
 
-document.querySelectorAll(".countdown-duration")
-    .forEach(button => {
-        button.addEventListener("click", async () => {
-            const minutes = Number(button.dataset.minutes);
+document.getElementById("setCountdownDuration")
+    ?.addEventListener("click", async () => {
 
-            const response = await fetch("?handler=SetCountdownDuration", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "RequestVerificationToken": token
-                },
-                body: `minutes=${encodeURIComponent(minutes)}`
-            });
+        const input =
+            document.getElementById("countdownMinutes");
 
-            if (!response.ok) {
-                console.error(
-                    "SetCountdownDuration error",
-                    response.status
-                );
-            }
+        const minutes = Number(input.value);
+
+        if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) {
+            alert("Wpisz liczbę minut od 1 do 1440.");
+            return;
+        }
+
+        const response = await fetch("?handler=SetCountdownDuration", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "RequestVerificationToken": token
+            },
+            body: `minutes=${encodeURIComponent(minutes)}`
         });
+
+        if (!response.ok) {
+            console.error(
+                "SetCountdownDuration error",
+                response.status
+            );
+        }
     });
 
 
